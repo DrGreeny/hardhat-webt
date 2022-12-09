@@ -1,36 +1,28 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.17;
 
-import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
+import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
+import "@openzeppelin/contracts/utils/Counters.sol";
+import "@openzeppelin/contracts/access/Ownable.sol";
 
-contract BasicNft is ERC721 {
-    string public constant TOKEN_URI =
-        "ipfs://bafybeig37ioir76s7mg5oobetncojcm3c3hxasyd4rvid4jqhy4gkaheg4/?filename=0-PUG.json";
-    uint256 private s_tokenCounter;
+contract BasicNft is ERC721URIStorage, Ownable {
+    using Counters for Counters.Counter;
+    Counters.Counter private _tokenIds;
 
     event NftMinted(uint256 indexed tokenId);
 
-    constructor() ERC721("Dogie", "DOG") {
-        s_tokenCounter = 0;
-    }
+    constructor() ERC721("WebTNFT", "WebT") {}
 
-    function mintNft() public {
-        _safeMint(msg.sender, s_tokenCounter);
-        emit NftMinted(s_tokenCounter);
-        s_tokenCounter = s_tokenCounter + 1;
-    }
+    function mintNFT(
+        address recipient,
+        string memory tokenURI
+    ) public onlyOwner returns (uint256) {
+        _tokenIds.increment();
 
-    function tokenURI(
-        uint256 tokenId
-    ) public view override returns (string memory) {
-        require(
-            _exists(tokenId),
-            "ERC721Metadata: URI query for nonexistent token"
-        );
-        return TOKEN_URI;
-    }
+        uint256 newItemId = _tokenIds.current();
+        _mint(recipient, newItemId);
+        _setTokenURI(newItemId, tokenURI);
 
-    function getTokenCounter() public view returns (uint256) {
-        return s_tokenCounter;
+        return newItemId;
     }
 }
