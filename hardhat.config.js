@@ -8,7 +8,7 @@ require("dotenv").config()
 
 const GOERLI_RPC_URL =
   process.env.GOERLI_RPC_URL || "https://eth-goerli/example"
-const PRIVATE_KEY = process.env.PRIVATE_KEY || "0xkey"
+const PRIVATE_KEY = process.env.PRIVATE_KEY || ""
 const ETHERSCAN_API_KEY = process.env.ETHERSCAN_API_KEY || "key"
 
 /** @type import('hardhat/config').HardhatUserConfig */
@@ -23,7 +23,7 @@ module.exports = {
       chainId: 5,
       blockConfirmations: 6,
       url: GOERLI_RPC_URL,
-      accounts: PRIVATE_KEY !== undefined ? [PRIVATE_KEY] : [],
+      accounts: [PRIVATE_KEY],
       saveDeployments: true,
     },
   },
@@ -33,10 +33,10 @@ module.exports = {
   namedAccounts: {
     deployer: {
       default: 0,
-      //5: 1, //first position on goerli}
+      5: 0, //first position on goerli}
     },
     player: {
-      default: 1,
+      default: 0,
     },
   },
   gasReporter: {
