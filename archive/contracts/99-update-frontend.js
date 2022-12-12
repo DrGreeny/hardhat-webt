@@ -9,10 +9,10 @@ const FRONT_END_BASICNFT_ABI_FILE = "../nextjs-webt/constants/basicNftAbi.json"
 module.exports = async function () {
   if (process.env.UPDATE_FRONTEND) {
     console.log("Updating front end")
-    //updateBoxAbi()
-    await updateBasicNftAbi()
-    await updateContractAddresses()
+    updateBoxAbi()
+    updateBasicNftAbi()
     console.log("done")
+    updateContractAddresses()
   }
 }
 async function updateBoxAbi() {
@@ -51,17 +51,14 @@ async function updateBasicNftAbi() {
 }
 
 async function updateContractAddresses() {
-  //const box = await ethers.getContract("Box")
-  console.log("Getting Smart Contract...")
+  const box = await ethers.getContract("Box")
   const basicNft = await ethers.getContract("BasicNft")
-  console.log("basicNft_SC:", basicNft)
+
   const chainId = network.config.chainId.toString()
-  console.log("CHainId:", chainId)
   const currentAddresses = JSON.parse(
     fs.readFileSync(FRONT_END_ADDRESSES_FILE, "utf8")
   )
-  console.log("Current addresses:", currentAddresses)
-  /*   if (network.config.chainId.toString() in currentAddresses) {
+  if (network.config.chainId.toString() in currentAddresses) {
     if (!currentAddresses[chainId].includes(box.address)) {
       currentAddresses[chainId].push(box.address)
       console.log("Replacing box address in frontend")
@@ -69,10 +66,9 @@ async function updateContractAddresses() {
   } else {
     currentAddresses[chainId] = [box.address]
     console.log("Creating Box address in frontend")
-  } */
-
+  }
+  console.log(currentAddresses)
   if (network.config.chainId.toString() in currentAddresses) {
-    console.log("chainId found in addresses")
     if (!currentAddresses[chainId].includes(basicNft.address)) {
       currentAddresses[chainId].push(basicNft.address)
       console.log("Replacing basicNft address in frontend")
